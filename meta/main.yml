@@ -5,9 +5,10 @@ galaxy_info:
   license: "license (MIT)"
   min_ansible_version: 1.2
   platforms:
-  - name: CentOS
+  - name: EL
     versions:
     - 7
-  categories:
-  - ansible-galaxy-aws-apache
-  - ansible-galaxy-apache
+  galaxy_tags:
+  - Apache
+  - AWS EC2
+  depedencies: []  
