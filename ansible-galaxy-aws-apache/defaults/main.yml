@@ -1,0 +1,10 @@
+---
+# defaults file for ansible-galaxy-aws-apache
+#ec2_launch_key_name = "ChefWS"
+#ec2_launch_instance_type = "t2.micro"
+#ec2_launch_image = "ami-0b1e356e"
+#ec2_launch_count = "1"
+#ec2_launch_SGs = "sg-ea78b881"
+#ec2_launch_region = "us-east-2"
+#ec2_launch_state = "present"
+#ec2_server_type = "WebServer"

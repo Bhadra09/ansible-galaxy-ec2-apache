@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  connection: localhost
+  gather_facts: false
+  roles:
+   - ansible-galaxy-aws-apache
+
+- name : install Apache
+  hosts: launched
+  remote_user: ec2-user
+  gather_facts: true
+  roles:
+    - ansible-galaxy-apache

@@ -1,0 +1,50 @@
+---
+# tasks file for ansible-galaxy-aws-apache
+    - name: Install PIP Boto
+      yum: name=python-pip update_cache=yes state=present
+    - name: Install python-Boto
+      pip: name=boto state=present
+    - name: provision EC2 Instance
+      ec2:
+        key_name: "{{ ec2_launch_key_name }}"
+        instance_type: "{{ ec2_launch_instance_type }}"
+        image: "{{ ec2_launch_image }}"
+        count: "{{ ec2_launch_count }}"
+        group_id: "{{ ec2_launch_SGs }}"
+        region: "{{ ec2_launch_region }}" 
+        state:  "{{ ec2_launch_state }}"
+        wait: yes
+        instance_tags:
+            Name: "{{ ec2_server_type }}" 
+      register: ec2
+
+    - name: Add new instance to host group
+      add_host:
+        hostname: "{{ item.public_ip }}"
+        groupname: launched
+        ansible_user: ec2-user
+      with_items: "{{ ec2.instances }}"
+
+    - name: Wait for SSH to come up
+      wait_for:
+        host: "{{ item.public_dns_name }}"
+        port: 22
+        delay: 60
+        timeout: 320
+        state: started
+      with_items: "{{ ec2.instances }}"
+	  
+	- name: Add newly created instances to the hosts for the next play
+      add_host:
+        name: "{{ item.public_ip }}"
+        group: launched
+        when: item.state == "running"
+      with_items: "{{ ec2.instances }}"
+
+- name: Configure instance(s)
+  hosts: launched
+  remote_user: ec2-user
+  become: true
+  gather_facts: true
+
+  - include_tasks: apache.yml

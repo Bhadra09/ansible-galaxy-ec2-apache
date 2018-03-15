@@ -1,0 +1,37 @@
+---
+# tasks file for apache
+#- name: Configure instance(s)
+#  hosts: "{{ ec2_launch_hostgroup }}"
+#  hosts: [webserver]
+#  remote_user: ec2-user
+#  become: true
+#  gather_facts: true
+
+- name: install GIT package
+  yum: 
+    name: git
+    state: present 
+  become: true 
+  become_method: sudo
+
+- name: Installing httpd package
+  yum: 
+    name: httpd
+    state: present 
+  become: true
+  become_method: sudo
+
+- name: Starting and enabling the httpd service
+  service: 
+    name: httpd 
+    state: started
+    enabled: yes
+  become: true
+  become_method: sudo
+
+- name: Deploy sample file from GIT
+  git: 
+    repo: https://github.com/Bhadra09/samplehtml.git 
+    dest: /var/www/html
+  become: true
+  become_method: sudo
